@@ -1,6 +1,7 @@
 import tensorflow as tf
 import keras_tuner as kt
 import numpy as np
+import testing
 
 class Model:
     def __init__(self, *arg):
@@ -19,7 +20,7 @@ class Model:
         model.add(tf.keras.layers.Dense(1))
         model.build((None, layers[len(layers)-1]))
         model.compile(loss='mean_squared_error',
-                      optimizer=tf.keras.optimizers.SGD(0.01),
+                      optimizer=tf.keras.optimizers.SGD(0.001),
                       metrics=['mse'])
         return model
     
@@ -42,15 +43,15 @@ class Model:
                      max_epochs=10,
                      factor=3)
         stop_early = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=5)
-        tuner.search(np.array(train_features), np.array(train_labels), epochs=50, validation_split=0.2, callbacks=[stop_early])
+        tuner.search(np.array(train_features), np.array(train_labels), epochs=50, validation_split=0.33, callbacks=[stop_early])
         best_hps=tuner.get_best_hyperparameters(num_trials=1)[0]
         model = tuner.hypermodel.build(best_hps)
-        history = model.fit(np.array(train_features), np.array(train_labels), epochs=50, validation_split=0.2)
+        history = model.fit(np.array(train_features), np.array(train_labels), epochs=50, validation_split=0.33)
 
         mse_per_epoch = history.history['mse']
         best_epoch = mse_per_epoch.index(min(mse_per_epoch)) + 1
         hypermodel = tuner.hypermodel.build(best_hps)
-        hypermodel.fit(np.array(train_features), np.array(train_labels), epochs=best_epoch, validation_split=0.2)
+        hypermodel.fit(np.array(train_features), np.array(train_labels), epochs=best_epoch, validation_split=0.33)
         self.save_model(hypermodel)
         return
     

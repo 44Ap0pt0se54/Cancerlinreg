@@ -37,6 +37,7 @@ class DataPreprocess:
 
             self.data = self.raw_data.copy() # 'PctEmployed16_Over' 
         else :
+            self.data = pd.read_csv('data_file')
             self.train_features = pd.read_csv('train_dataset_file')
             self.test_features = pd.read_csv('test_dataset_file')
             self.train_labels = self.train_features.pop('TARGET_deathRate')
@@ -51,8 +52,7 @@ class DataPreprocess:
             self.data = self.data_imputation(self.data.copy(),key)
 
         #Normalization
-        self.dataNormalized = (self.data-np.mean(self.data,axis=0))/np.std(self.data)   # Data normalization E = 0, Var = 1
-
+        self.dataNormalized = ((self.data-np.mean(self.data,axis=0))/np.std(self.data))  # Data normalization E = 0, Var = 1
         
 
 
@@ -104,8 +104,8 @@ class DataPreprocess:
 
         d = data_norm.copy()
 
-        d = (data_norm)*self.v+self.m
-
+        d = (d)*self.v+self.m
+        #d = (d-np.min(d,axis=0))/(np.max(d,axis=0)-np.min(d,axis=0))
         return d
 
     def save_train_test_data(self):
@@ -131,7 +131,7 @@ class DataPreprocess:
             if k != column_name:
                 train_features = train_features.drop(k, axis=1)
 
-        imputation_model = model.Model.build_and_compile_model(32,16,8,4, len(dataWithoutColumnsNaN_normalized.columns))
+        imputation_model = model.Model.build_and_compile_model(32,16, len(dataWithoutColumnsNaN_normalized.columns))
         imputation_model.fit(
             train_features,
             train_labels,

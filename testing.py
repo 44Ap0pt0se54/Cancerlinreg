@@ -2,6 +2,9 @@ import matplotlib.pyplot as plt
 import tensorflow as tf
 import numpy as np
 
+
+
+
 class Testing:
     def __init__(self, model, test_features, test_labels):
         self.model = model
@@ -35,23 +38,13 @@ class Testing:
         _ = plt.plot(lims, lims)
         plt.show()
         return
+    
 
-    def correlation_coefficient(self):
-        Sum1 = 0
-        Sum2 = 0
 
-        Ymean = np.mean(self.test_labels)
-
-        for i in range(len(self.test_labels)):
-            Sum1 += (self.test_labels.values[i]-self.test_predictions[i])**2
-
-            Sum2 += (self.test_labels.values[i]-Ymean)**2
-
-        R2 = float(1 - Sum1/Sum2 )
-        return R2
     
     def get_MSE(self):
         Sum = 0
         for i in range(len(self.test_labels)):
             Sum+=(self.test_labels.values[i]-self.test_predictions[i])**2
-        return Sum/len(self.test_labels)
+        res = Sum/len(self.test_labels)
+        return res
