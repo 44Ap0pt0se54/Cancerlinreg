@@ -1,6 +1,8 @@
 import tensorflow as tf
 import keras_tuner as kt
 import numpy as np
+import os
+import shutil
 import testing
 
 class Model:
@@ -63,6 +65,8 @@ class Model:
         for elt in self.layers[0:len(self.layers)-1]:
             self.name = self.name + '-' + str(elt)
         name = self.name
+        if os.path.exists('models/'+name):
+            shutil.rmtree('models/'+name)
         if len(arg) == 1:
             name += 'HP'
             arg[0].save('models/'+name)
